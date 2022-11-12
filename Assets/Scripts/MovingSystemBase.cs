@@ -13,7 +13,7 @@ public partial class MovingSystemBase : SystemBase
         // RefRO<Speed> -> Reference Read Only
         foreach ((TransformAspect transformAspect, RefRO<Speed> speed) in SystemAPI.Query<TransformAspect, RefRO<Speed>>())
         {
-            transformAspect.Position += new float3(speed.ValueRO.value * SystemAPI.Time.DeltaTime, 0, 0);
+            // transformAspect.Position += new float3(speed.ValueRO.value * SystemAPI.Time.DeltaTime, 0, 0);
             // transformAspect.TranslateWorld();
         }
     }
