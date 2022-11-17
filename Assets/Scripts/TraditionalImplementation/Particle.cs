@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class Particle : MonoBehaviour
 {
-    private Rigidbody rigidbody;
+    private Rigidbody _rigidbody;
+    private int _id;
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        this._rigidbody = GetComponent<Rigidbody>();
+        this._id = this._rigidbody.gameObject.GetInstanceID();
 
     }
 
     private void FixedUpdate()
     {
-        Vector3 forceOnThisParticle = ForcesCalculator.ElectricField[this.gameObject.GetInstanceID()];
-        rigidbody.AddForce(forceOnThisParticle);
+        Vector3 forceOnThisParticle = ForcesCalculator.vectorField[this._id];
+        this._rigidbody.AddForce(forceOnThisParticle);
     }
 }

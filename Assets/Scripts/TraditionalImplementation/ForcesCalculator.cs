@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class ForcesCalculator : MonoBehaviour
 {
-    public static Dictionary<int, Vector3> ElectricField = new Dictionary<int, Vector3>();
+    public static Dictionary<int, Vector3> vectorField = new Dictionary<int, Vector3>();
 
-    private float lowestAllowedForce = -5f;
-    private float maxDistance = 2f;
+    [SerializeField] private float lowestAllowedForce = -5f;
+    [SerializeField] private float maxDistance = 2f;
 
     private void FixedUpdate()
     {
@@ -24,10 +24,11 @@ public class ForcesCalculator : MonoBehaviour
                 forceOnCurrentParticle += ForceBetweenTwoParticles(allParticles[i], particle);
             }
 
-            ForcesCalculator.ElectricField[currentParticleId] = forceOnCurrentParticle;
+            ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
         }
     }
 
+    // This calculates the force on the first gameobject by the second.
     private Vector3 ForceBetweenTwoParticles(GameObject first, GameObject second)
     {
         Vector3 direction = second.transform.position - first.transform.position;
