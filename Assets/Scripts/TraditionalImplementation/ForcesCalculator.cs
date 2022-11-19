@@ -4,9 +4,9 @@ using UnityEngine;
 public class ForcesCalculator : MonoBehaviour
 {
     public static Dictionary<int, Vector3> vectorField = new Dictionary<int, Vector3>();
+    public static float maxDistanceToCalculate = 2f;
 
     [SerializeField] private float lowestAllowedForce = -5f;
-    [SerializeField] private float maxDistance = 2f;
 
     private void FixedUpdate()
     {
@@ -16,12 +16,12 @@ public class ForcesCalculator : MonoBehaviour
         {
             int currentParticleId = allParticles[i].GetInstanceID();
             Vector3 forceOnCurrentParticle = new Vector3();
-            foreach (GameObject particle in allParticles)
+            for (int j = 0; j < allParticles.Length; j++)
             {
-                if (particle.GetInstanceID() == currentParticleId)
+                if (allParticles[j].GetInstanceID() == currentParticleId)
                     continue;
 
-                forceOnCurrentParticle += ForceBetweenTwoParticles(allParticles[i], particle);
+                forceOnCurrentParticle += ForceBetweenTwoParticles(allParticles[i], allParticles[j]);
             }
 
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
@@ -35,7 +35,7 @@ public class ForcesCalculator : MonoBehaviour
         float distance = direction.magnitude;
         direction.Normalize();
 
-        if (distance > maxDistance)
+        if (distance >= ForcesCalculator.maxDistanceToCalculate)
             return Vector3.zero;
 
         // Calculated from the Lennard-Jones potential.
