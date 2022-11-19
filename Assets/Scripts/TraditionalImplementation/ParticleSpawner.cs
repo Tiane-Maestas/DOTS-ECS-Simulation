@@ -4,7 +4,10 @@ using System.Collections.Generic;
 public class ParticleSpawner : MonoBehaviour
 {
     public static float U_Total = 400; // Total inital energy randomly given to each particle in terms of kinetic energy.
-    public static List<GameObject> particles = new List<GameObject>();
+    public static bool simulationStarted = false;
+
+    // Note: "particles" isn't static becuase GameObjects need a reload of the editor to replace the satatic GameObjects in memory.
+    public List<GameObject> particles = new List<GameObject>();
 
     [SerializeField] private GameObject _container;
 
@@ -56,17 +59,17 @@ public class ParticleSpawner : MonoBehaviour
     {
         // This radius is assuming the scale is the same in x, y, z of the transform.
         float particleVisualRadius = _particlePrefab.transform.localScale.x;
-        Vector3 initialSpawnPosition = new Vector3(_insideEdgesXRange.x + 2 * particleVisualRadius,
-                                                   _insideEdgesYRange.x + 2 * particleVisualRadius,
-                                                   _insideEdgesZRange.x + 2 * particleVisualRadius);
+        Vector3 initialSpawnPosition = new Vector3(_insideEdgesXRange.x + 2f * particleVisualRadius,
+                                                   _insideEdgesYRange.x + 2f * particleVisualRadius,
+                                                   _insideEdgesZRange.x + 2f * particleVisualRadius);
 
         Vector3 currentSpawnPosition = initialSpawnPosition;
         for (int i = 0; i < _N; i++)
         {
             GameObject newParticle = Instantiate(_particlePrefab, currentSpawnPosition, this.transform.rotation);
-            ParticleSpawner.particles.Add(newParticle);
+            this.particles.Add(newParticle);
             currentSpawnPosition = IncrementCurrentSpawnPosition(currentSpawnPosition, particleVisualRadius);
-            if (currentSpawnPosition == Vector3.zero) // N is too large.
+            if (currentSpawnPosition.Equals(Vector3.positiveInfinity)) // N is too large.
                 break;
         }
     }
@@ -76,37 +79,56 @@ public class ParticleSpawner : MonoBehaviour
         float positionOffset = ForcesCalculator.maxDistanceToCalculate;
 
         //First try x
-        if ((position.x + positionOffset) < _insideEdgesXRange.y)
+        if ((position.x + positionOffset) <= (_insideEdgesXRange.y - 2f * particleVisualRadius))
         {
             return new Vector3(position.x + positionOffset, position.y, position.z);
         }
-        position.x = _insideEdgesXRange.x + 2 * particleVisualRadius; // We exceed x bounds reset x.
+        position.x = _insideEdgesXRange.x + 2f * particleVisualRadius; // We exceed x bounds reset x.
 
         // Then try y
-        if ((position.y + positionOffset) < _insideEdgesYRange.y)
+        if ((position.y + positionOffset) <= (_insideEdgesYRange.y - 2f * particleVisualRadius))
         {
             return new Vector3(position.x, position.y + positionOffset, position.z);
 
         }
-        position.y = _insideEdgesYRange.x + 2 * particleVisualRadius; // We exceed y bounds reset y.
+        position.y = _insideEdgesYRange.x + 2f * particleVisualRadius; // We exceed y bounds reset y.
 
         // Lastly try z
-        if ((position.z + positionOffset) < _insideEdgesZRange.y)
+        if ((position.z + positionOffset) <= (_insideEdgesZRange.y - 2f * particleVisualRadius))
         {
             return new Vector3(position.x, position.y, position.z + positionOffset);
 
         }
-        return Vector3.zero; // N is too large for container.
+        return Vector3.positiveInfinity; // N is too large for container.
     }
 
     void Update()
     {
-        // Spawn a single particle at the mouse location on a click.
+        // Start the simulation on space bar press.
+        if (Input.GetKeyUp(KeyCode.Space) && !ParticleSpawner.simulationStarted)
+        {
+            AddParticleKineticEnergy();
+        }
+
+        // Spawn a single particle at the mouse location on a click if allowed.
         if (Input.GetMouseButton(0) && _mouseSpawnAllowed)
         {
             Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             spawnLocation.z = 0;
             GameObject newParticle = Instantiate(_particlePrefab, spawnLocation, this.transform.rotation);
+        }
+    }
+
+    private void AddParticleKineticEnergy()
+    {
+        float energyPerParicle = ParticleSpawner.U_Total / _N;
+        float initialVeloctyMag = Mathf.Sqrt(2 * energyPerParicle / _particlePrefab.GetComponent<Rigidbody>().mass);
+
+        foreach (GameObject particle in this.particles)
+        {
+            Vector3 newVelocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+            newVelocity.Normalize();
+            particle.GetComponent<Rigidbody>().velocity = newVelocity * initialVeloctyMag;
         }
     }
 }
