@@ -19,6 +19,7 @@ public class ForcesCalculator : MonoBehaviour
     {
         for (int i = 0; i < this._allParticles.Count; i++)
         {
+            
             int currentParticleId = this._allParticles[i].GetInstanceID();
             Vector3 forceOnCurrentParticle = new Vector3();
             for (int j = 0; j < this._allParticles.Count; j++)
@@ -30,6 +31,7 @@ public class ForcesCalculator : MonoBehaviour
             }
 
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
+            
         }
     }
 
@@ -44,14 +46,14 @@ public class ForcesCalculator : MonoBehaviour
             return Vector3.zero;
 
         // Calculated from the Lennard-Jones potential.
-        float sigma = 0.5f;
-        float eta = 5f;
+        float sigma = 0.5f; //diameter of particle
+        float eta = 5f; //U_0
         float magnitude = eta * (6 * Mathf.Pow(sigma, 6) / Mathf.Pow(distance, 7) - (12 * Mathf.Pow(sigma, 12) / Mathf.Pow(distance, 13)));
 
         // Limiter so the negative values don't get too large.
         if (magnitude < lowestAllowedForce)
             magnitude = lowestAllowedForce;
 
-        return new Vector3(direction.x * magnitude, direction.y * magnitude, 0);
+        return new Vector3(direction.x * magnitude, direction.y * magnitude, direction.z * magnitude);
     }
 }
