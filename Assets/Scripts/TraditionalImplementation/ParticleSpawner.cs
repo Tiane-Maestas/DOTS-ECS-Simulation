@@ -129,7 +129,7 @@ public class ParticleSpawner : MonoBehaviour
         {
             Vector3 newVelocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
             newVelocity.Normalize();
-            particle.GetComponent<Rigidbody>().velocity = newVelocity * initialVeloctyMag;
+            particle.GetComponent<Rigidbody>().AddForce(newVelocity * initialVeloctyMag, ForceMode.VelocityChange);
         }
     }
 }
