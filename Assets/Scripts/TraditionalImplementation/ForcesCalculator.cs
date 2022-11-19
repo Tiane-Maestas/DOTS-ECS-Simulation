@@ -19,7 +19,7 @@ public class ForcesCalculator : MonoBehaviour
     {
         for (int i = 0; i < this._allParticles.Count; i++)
         {
-            
+
             int currentParticleId = this._allParticles[i].GetInstanceID();
             Vector3 forceOnCurrentParticle = new Vector3();
             for (int j = 0; j < this._allParticles.Count; j++)
@@ -31,7 +31,7 @@ public class ForcesCalculator : MonoBehaviour
             }
 
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
-            
+
         }
     }
 
