@@ -926,7 +926,7 @@ MonoBehaviour:
   _container: {fileID: 840648681}
   _particlePrefab: {fileID: 6321205097369501641, guid: eb9e541b7a40cab4e8285295bbcc6b77,
     type: 3}
-  _N: 100
+  _N: 250
   _mouseSpawnAllowed: 0
 --- !u!4 &1169237683
 Transform:

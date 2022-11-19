@@ -8,20 +8,25 @@ public class ForcesCalculator : MonoBehaviour
 
     [SerializeField] private float lowestAllowedForce = -5f;
 
+    private List<GameObject> _allParticles;
+
+    private void Start()
+    {
+        this._allParticles = GameObject.Find("SimulationManager").GetComponent<ParticleSpawner>().particles;
+    }
+
     private void FixedUpdate()
     {
-        GameObject[] allParticles = GameObject.FindGameObjectsWithTag("Particle");
-
-        for (int i = 0; i < allParticles.Length; i++)
+        for (int i = 0; i < this._allParticles.Count; i++)
         {
-            int currentParticleId = allParticles[i].GetInstanceID();
+            int currentParticleId = this._allParticles[i].GetInstanceID();
             Vector3 forceOnCurrentParticle = new Vector3();
-            for (int j = 0; j < allParticles.Length; j++)
+            for (int j = 0; j < this._allParticles.Count; j++)
             {
-                if (allParticles[j].GetInstanceID() == currentParticleId)
+                if (this._allParticles[j].GetInstanceID() == currentParticleId)
                     continue;
 
-                forceOnCurrentParticle += ForceBetweenTwoParticles(allParticles[i], allParticles[j]);
+                forceOnCurrentParticle += ForceBetweenTwoParticles(this._allParticles[i], this._allParticles[j]);
             }
 
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;

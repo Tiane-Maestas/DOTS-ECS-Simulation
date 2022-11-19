@@ -25,7 +25,8 @@ public class ParticleSpawner : MonoBehaviour
 
     private void Start()
     {
-        // Ignore collisions between particles eventually!!
+        // This doesn't allow particles to collide with themselves.
+        Physics.IgnoreLayerCollision(3, 3, true);
 
         // Forcing container position to be at the origin so all following calculations are correct.
         _container.transform.position = Vector3.zero;
