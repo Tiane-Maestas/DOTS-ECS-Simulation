@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 122593966}
   m_Layer: 0
   m_Name: WallDown
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 261358453}
   m_Layer: 0
   m_Name: WallUp
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -594,7 +594,7 @@ GameObject:
   - component: {fileID: 585537540}
   m_Layer: 0
   m_Name: WallLeft
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -745,7 +745,7 @@ GameObject:
   - component: {fileID: 840648682}
   m_Layer: 0
   m_Name: Container
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -952,13 +952,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1169237681}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d939d899e3683b346ad7495c2db8f7d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 477a3ec9db45f0846a73090ccc36f192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowestAllowedForce: -10
-  totalEnergy: 0
-  kineticEnergy: 0
+  kinetic: 0
   potential: 0
+  totalEnergy: 0
 --- !u!1 &1366129726
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,7 +1143,7 @@ GameObject:
   - component: {fileID: 1562664398}
   m_Layer: 0
   m_Name: WallFront
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -1249,7 +1248,7 @@ GameObject:
   - component: {fileID: 1623403576}
   m_Layer: 0
   m_Name: WallRight
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -1354,7 +1353,7 @@ GameObject:
   - component: {fileID: 1848062700}
   m_Layer: 0
   m_Name: WallBack
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647

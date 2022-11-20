@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ParticleSpawner : MonoBehaviour
 {
-    public static float U_Total = 200; // Total inital energy randomly given to each particle in terms of kinetic energy.
+    public static float U_Total = 100; // Total inital energy randomly given to each particle in terms of kinetic energy.
     public static bool simulationStarted = false;
 
     // Note: "particles" isn't static becuase GameObjects need a reload of the editor to replace the satatic GameObjects in memory.
@@ -16,6 +16,8 @@ public class ParticleSpawner : MonoBehaviour
     [SerializeField] private int _N; // The total number of particles in the simulation.
 
     [SerializeField] private bool _mouseSpawnAllowed;
+
+    private float positionOffset = 2f;
 
     #region Variables for  the container bounds.
     private Vector2 _insideEdgesXRange;
@@ -30,6 +32,9 @@ public class ParticleSpawner : MonoBehaviour
 
         // Forcing container position to be at the origin so all following calculations are correct.
         _container.transform.position = Vector3.zero;
+
+        // In case we change collider radius.
+        positionOffset = _particlePrefab.transform.GetChild(0).GetComponent<SphereCollider>().radius + 0.05f;
 
         CalculateContainerBounds();
         SpawnParticles();
@@ -77,8 +82,6 @@ public class ParticleSpawner : MonoBehaviour
 
     private Vector3 IncrementCurrentSpawnPosition(Vector3 position, float particleVisualRadius)
     {
-        float positionOffset = ForcesCalculator.maxDistanceToCalculate;
-
         //First try x
         if ((position.x + positionOffset) <= (_insideEdgesXRange.y - 2f * particleVisualRadius))
         {
@@ -132,5 +135,10 @@ public class ParticleSpawner : MonoBehaviour
             newVelocity.Normalize();
             particle.GetComponent<Rigidbody>().AddForce(newVelocity * initialVeloctyMag, ForceMode.VelocityChange);
         }
+    }
+
+    private void OnDestroy()
+    {
+        ParticleSpawner.simulationStarted = false;
     }
 }

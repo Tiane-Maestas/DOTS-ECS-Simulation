@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Particle
+  - Enviornement
+  - Environment
   layers:
   - Default
   - TransparentFX

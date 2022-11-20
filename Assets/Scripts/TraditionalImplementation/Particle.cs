@@ -1,21 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Particle : MonoBehaviour
 {
     private Rigidbody _rigidbody;
-    private int _id;
-    void Start()
+    private void Start()
     {
-        this._rigidbody = GetComponent<Rigidbody>();
-        this._id = this._rigidbody.gameObject.GetInstanceID();
+        this._rigidbody = this.transform.parent.GetComponent<Rigidbody>();
+    }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag.Equals("Environment"))
+            return;
+
+        ApplyForceFromOtherParticles(other.gameObject);
+    }
+
+    // The force on the this by other.
+    private void ApplyForceFromOtherParticles(GameObject other)
+    {
+        Vector3 direction = other.transform.position - this.transform.position;
+        float distance = direction.magnitude;
+        direction.Normalize();
+
+        // Limiter so the negative values don't get too large.
+        if (distance < ParticleInfo.minDistanceToCalculate)
+            distance = ParticleInfo.minDistanceToCalculate;
+
+        ParticleInfo.potentialEnergy += ParticleInfo.eta * (Mathf.Pow((ParticleInfo.sigma / distance), 12) - Mathf.Pow((ParticleInfo.sigma / distance), 6)) / 2f;
+
+        float magnitude = ParticleInfo.eta * (6 * Mathf.Pow(ParticleInfo.sigma, 6) / Mathf.Pow(distance, 7) - (12 * Mathf.Pow(ParticleInfo.sigma, 12) / Mathf.Pow(distance, 13)));
+
+        this._rigidbody.AddForce(new Vector3(direction.x * magnitude, direction.y * magnitude, direction.z * magnitude));
     }
 
     private void FixedUpdate()
     {
-        Vector3 forceOnThisParticle = ForcesCalculator.vectorField[this._id];
-        this._rigidbody.AddForce(forceOnThisParticle);
+        ParticleInfo.kineticEnergy += 0.5f * this._rigidbody.mass * Mathf.Pow(this._rigidbody.velocity.magnitude, 2);
     }
 }
