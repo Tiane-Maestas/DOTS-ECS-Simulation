@@ -109,6 +109,7 @@ public class ParticleSpawner : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && !ParticleSpawner.simulationStarted)
         {
             AddParticleKineticEnergy();
+            ParticleSpawner.simulationStarted = true;
         }
 
         // Spawn a single particle at the mouse location on a click if allowed.
