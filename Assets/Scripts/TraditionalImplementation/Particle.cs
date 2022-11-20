@@ -16,6 +16,6 @@ public class Particle : MonoBehaviour
     private void FixedUpdate()
     {
         Vector3 forceOnThisParticle = ForcesCalculator.vectorField[this._id];
-        this._rigidbody.AddForce(forceOnThisParticle);
+        //this._rigidbody.AddForce(forceOnThisParticle);
     }
 }

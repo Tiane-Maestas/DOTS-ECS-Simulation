@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ParticleSpawner : MonoBehaviour
 {
-    public static float U_Total = 400; // Total inital energy randomly given to each particle in terms of kinetic energy.
+    public static float U_Total = 200; // Total inital energy randomly given to each particle in terms of kinetic energy.
     public static bool simulationStarted = false;
 
     // Note: "particles" isn't static becuase GameObjects need a reload of the editor to replace the satatic GameObjects in memory.
@@ -13,9 +13,9 @@ public class ParticleSpawner : MonoBehaviour
 
     [SerializeField] private GameObject _particlePrefab;
 
-    [SerializeField] private int _N = 10; // The total number of particles in the simulation.
+    [SerializeField] private int _N; // The total number of particles in the simulation.
 
-    [SerializeField] private bool _mouseSpawnAllowed = false;
+    [SerializeField] private bool _mouseSpawnAllowed;
 
     #region Variables for  the container bounds.
     private Vector2 _insideEdgesXRange;
@@ -124,12 +124,17 @@ public class ParticleSpawner : MonoBehaviour
     {
         float energyPerParicle = ParticleSpawner.U_Total / _N;
         float initialVeloctyMag = Mathf.Sqrt(2 * energyPerParicle / _particlePrefab.GetComponent<Rigidbody>().mass);
+        float kinetic = 0;
 
         foreach (GameObject particle in this.particles)
         {
             Vector3 newVelocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
             newVelocity.Normalize();
             particle.GetComponent<Rigidbody>().AddForce(newVelocity * initialVeloctyMag, ForceMode.VelocityChange);
+            kinetic += 0.5f * particle.GetComponent<Rigidbody>().mass * Mathf.Pow(initialVeloctyMag, 2);
         }
+        Debug.Log(kinetic);
+        Debug.Log(energyPerParicle);
+        Debug.Log(initialVeloctyMag);
     }
 }

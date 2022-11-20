@@ -5,8 +5,15 @@ public class ForcesCalculator : MonoBehaviour
 {
     public static Dictionary<int, Vector3> vectorField = new Dictionary<int, Vector3>();
     public static float maxDistanceToCalculate = 2f;
+    public static float minDistanceToCalculate = 0.54f;
+    [SerializeField] private float lowestAllowedForce;
+    [SerializeField] private float totalEnergy = 0;
+    [SerializeField] private float kineticEnergy = 0;
+    [SerializeField] private float potential = 0;
 
-    [SerializeField] private float lowestAllowedForce = -5f;
+    // Calculated from the Lennard-Jones potential.
+    public static float sigma = 0.5f; //diameter of particle
+    public static float eta = 5f; //U_0
 
     private List<GameObject> _allParticles;
 
@@ -17,6 +24,9 @@ public class ForcesCalculator : MonoBehaviour
 
     private void FixedUpdate()
     {
+        potential = 0;
+        kineticEnergy = 0;
+        totalEnergy = 0;
         for (int i = 0; i < this._allParticles.Count; i++)
         {
             
@@ -28,11 +38,14 @@ public class ForcesCalculator : MonoBehaviour
                     continue;
 
                 forceOnCurrentParticle += ForceBetweenTwoParticles(this._allParticles[i], this._allParticles[j]);
-            }
 
+            }
+  
+            kineticEnergy += 0.5f * this._allParticles[i].GetComponent<Rigidbody>().mass * Mathf.Pow(this._allParticles[i].GetComponent<Rigidbody>().velocity.magnitude, 2);
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
             
         }
+        totalEnergy = kineticEnergy + potential;
     }
 
     // This calculates the force on the first gameobject by the second.
@@ -40,19 +53,26 @@ public class ForcesCalculator : MonoBehaviour
     {
         Vector3 direction = second.transform.position - first.transform.position;
         float distance = direction.magnitude;
-        direction.Normalize();
 
-        if (distance >= ForcesCalculator.maxDistanceToCalculate)
-            return Vector3.zero;
-
-        // Calculated from the Lennard-Jones potential.
-        float sigma = 0.5f; //diameter of particle
-        float eta = 5f; //U_0
-        float magnitude = eta * (6 * Mathf.Pow(sigma, 6) / Mathf.Pow(distance, 7) - (12 * Mathf.Pow(sigma, 12) / Mathf.Pow(distance, 13)));
 
         // Limiter so the negative values don't get too large.
-        if (magnitude < lowestAllowedForce)
-            magnitude = lowestAllowedForce;
+        //if (distance < minDistanceToCalculate)
+        //    distance = minDistanceToCalculate;
+
+
+        direction.Normalize();
+
+        //if (distance < ForcesCalculator.maxDistanceToCalculate)
+        potential += eta * (Mathf.Pow((sigma / distance), 12) - Mathf.Pow((sigma / distance), 6));
+        //else
+        //    potential += eta * (Mathf.Pow((sigma / maxDistanceToCalculate), 12) - Mathf.Pow((sigma / maxDistanceToCalculate), 6));
+
+        //if (distance >= ForcesCalculator.maxDistanceToCalculate)
+        //    return Vector3.zero;
+
+
+        float magnitude = eta * (6 * Mathf.Pow(sigma, 6) / Mathf.Pow(distance, 7) - (12 * Mathf.Pow(sigma, 12) / Mathf.Pow(distance, 13)));
+
 
         return new Vector3(direction.x * magnitude, direction.y * magnitude, direction.z * magnitude);
     }
