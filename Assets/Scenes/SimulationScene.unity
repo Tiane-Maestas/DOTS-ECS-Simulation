@@ -956,6 +956,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lowestAllowedForce: -10
+  totalEnergy: 0
+  kineticEnergy: 0
+  potential: 0
 --- !u!1 &1366129726
 GameObject:
   m_ObjectHideFlags: 0
