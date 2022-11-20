@@ -6,7 +6,6 @@ public class ForcesCalculator : MonoBehaviour
     public static Dictionary<int, Vector3> vectorField = new Dictionary<int, Vector3>();
     public static float maxDistanceToCalculate = 2f;
     public static float minDistanceToCalculate = 0.54f;
-    [SerializeField] private float lowestAllowedForce;
     [SerializeField] private float totalEnergy = 0;
     [SerializeField] private float kineticEnergy = 0;
     [SerializeField] private float potential = 0;
@@ -29,7 +28,7 @@ public class ForcesCalculator : MonoBehaviour
         totalEnergy = 0;
         for (int i = 0; i < this._allParticles.Count; i++)
         {
-            
+
             int currentParticleId = this._allParticles[i].GetInstanceID();
             Vector3 forceOnCurrentParticle = new Vector3();
             for (int j = 0; j < this._allParticles.Count; j++)
@@ -40,10 +39,9 @@ public class ForcesCalculator : MonoBehaviour
                 forceOnCurrentParticle += ForceBetweenTwoParticles(this._allParticles[i], this._allParticles[j]);
 
             }
-  
-            kineticEnergy += 0.5f * this._allParticles[i].GetComponent<Rigidbody>().mass * Mathf.Pow(this._allParticles[i].GetComponent<Rigidbody>().velocity.magnitude, 2);
             ForcesCalculator.vectorField[currentParticleId] = forceOnCurrentParticle;
-            
+
+            kineticEnergy += 0.5f * this._allParticles[i].GetComponent<Rigidbody>().mass * Mathf.Pow(this._allParticles[i].GetComponent<Rigidbody>().velocity.magnitude, 2);
         }
         totalEnergy = kineticEnergy + potential;
     }
@@ -53,26 +51,15 @@ public class ForcesCalculator : MonoBehaviour
     {
         Vector3 direction = second.transform.position - first.transform.position;
         float distance = direction.magnitude;
-
-
-        // Limiter so the negative values don't get too large.
-        //if (distance < minDistanceToCalculate)
-        //    distance = minDistanceToCalculate;
-
-
         direction.Normalize();
 
-        //if (distance < ForcesCalculator.maxDistanceToCalculate)
+        // Limiter so the negative values don't get too large.
+        if (distance < minDistanceToCalculate)
+            distance = minDistanceToCalculate;
+
         potential += eta * (Mathf.Pow((sigma / distance), 12) - Mathf.Pow((sigma / distance), 6));
-        //else
-        //    potential += eta * (Mathf.Pow((sigma / maxDistanceToCalculate), 12) - Mathf.Pow((sigma / maxDistanceToCalculate), 6));
-
-        //if (distance >= ForcesCalculator.maxDistanceToCalculate)
-        //    return Vector3.zero;
-
 
         float magnitude = eta * (6 * Mathf.Pow(sigma, 6) / Mathf.Pow(distance, 7) - (12 * Mathf.Pow(sigma, 12) / Mathf.Pow(distance, 13)));
-
 
         return new Vector3(direction.x * magnitude, direction.y * magnitude, direction.z * magnitude);
     }

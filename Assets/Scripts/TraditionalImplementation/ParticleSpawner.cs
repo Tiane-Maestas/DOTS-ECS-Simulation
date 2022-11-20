@@ -124,17 +124,12 @@ public class ParticleSpawner : MonoBehaviour
     {
         float energyPerParicle = ParticleSpawner.U_Total / _N;
         float initialVeloctyMag = Mathf.Sqrt(2 * energyPerParicle / _particlePrefab.GetComponent<Rigidbody>().mass);
-        float kinetic = 0;
 
         foreach (GameObject particle in this.particles)
         {
             Vector3 newVelocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
             newVelocity.Normalize();
             particle.GetComponent<Rigidbody>().AddForce(newVelocity * initialVeloctyMag, ForceMode.VelocityChange);
-            kinetic += 0.5f * particle.GetComponent<Rigidbody>().mass * Mathf.Pow(initialVeloctyMag, 2);
         }
-        Debug.Log(kinetic);
-        Debug.Log(energyPerParicle);
-        Debug.Log(initialVeloctyMag);
     }
 }
