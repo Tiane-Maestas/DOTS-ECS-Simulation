@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ParticleSpawner : MonoBehaviour
 {
-    public static float U_Total = 100; // Total inital energy randomly given to each particle in terms of kinetic energy.
+    public static float U_Total = 1000; // Total inital energy randomly given to each particle in terms of kinetic energy.
     public static bool simulationStarted = false;
 
     // Note: "particles" isn't static becuase GameObjects need a reload of the editor to replace the satatic GameObjects in memory.
